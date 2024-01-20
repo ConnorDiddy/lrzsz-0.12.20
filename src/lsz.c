@@ -309,6 +309,29 @@ show_version(void)
 	printf ("%s (%s) %s\n", program_name, PACKAGE, VERSION);
 }
 
+// Initializes output stream
+int Tty;
+FILE* Ttystream;
+char *Nametty;
+
+void inittty(int com_port_number)
+{
+	char Nametty[20];
+	snprintf(Nametty, sizeof(Nametty), "/dev/ttyS%d", com_port_number);
+
+    // Open the Tty using the constructed device path
+    Tty = open(Nametty, O_RDWR);
+
+    if (Tty < 0) {
+        perror(Nametty);
+        exit(2);
+    }
+
+    Ttystream = fdopen(Tty, "w");
+
+	// Send a test character to this COM port
+    sendline('3');
+}
 
 int 
 main(int argc, char **argv)
@@ -710,8 +733,14 @@ main(int argc, char **argv)
 	} else if (stdin_files==1) {
 		io_mode_fd=1;
 	}
-	io_mode(io_mode_fd,1);
+	/*
+	I have no idea what this is doing but I don't like it
+	io_mode(io_mode_fd,1); 
 	readline_setup(io_mode_fd, 128, 256);
+	*/
+
+	// Here's my better version
+	readline_setup(3, 128, 256);
 
 	if (signal(SIGINT, bibi) == SIG_IGN)
 		signal(SIGINT, SIG_IGN);

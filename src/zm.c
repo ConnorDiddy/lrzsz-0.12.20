@@ -105,8 +105,11 @@ static void zsbh32 __P ((char *hdr, int type));
 
 extern int zmodem_requested;
 
-#define sendline(c) putchar((c) & 0377)
-#define xsendline(c) putchar(c)
+//#define sendline(c) putchar((c) & 0377)
+//#define xsendline(c) putchar(c)
+
+#define sendline(c) putc((c) & 0377, Ttystream) // No longer putting the char to stdout, now sending to a configurable stream
+#define xsendline(c) putc((c) & 0377, Ttystream) // Same ^^
 
 /*
  * Read a character from the modem line with timeout.

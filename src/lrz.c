@@ -253,6 +253,29 @@ show_version(void)
 	printf ("%s (%s) %s\n", program_name, PACKAGE, VERSION);
 }
 
+// Initializes output stream
+int Tty;
+FILE* Ttystream;
+char *Nametty;
+
+void inittty(int com_port_number)
+{
+	snprintf(Nametty, sizeof(Nametty), "/dev/ttyS%d", com_port_number);
+
+    // Open the Tty using the constructed device path
+    Tty = open(Nametty, O_RDWR);
+
+    if (Tty < 0) {
+        perror(Nametty);
+        exit(2);
+    }
+
+    Ttystream = fdopen(Tty, "w");
+
+	// Send a test character to this COM port
+    sendline('3');
+}
+
 int
 main(int argc, char *argv[])
 {

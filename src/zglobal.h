@@ -365,8 +365,14 @@ RETSIGTYPE bibi __P ((int n));
 //#define sendline(c) putchar((c) & 0377)
 //#define xsendline(c) putchar(c)
 
-#define sendline(c) putc((c) & 0377, Ttystream)
-#define xsendline(c) putc((c) & 0377, Ttystream)
+#define sendline(c) putc((c) & 0377, Ttystream) // No longer putting the char to stdout, now sending to a configurable stream
+#define xsendline(c) putc((c) & 0377, Ttystream) // Same ^^
+
+// Variables used for configuring output stream
+#include <stdio.h> // Needed for FILE
+extern char *Nametty;
+extern FILE *Ttystream;
+extern int Tty;
 
 /* zreadline.c */
 extern char *readline_ptr; /* pointer for removing chars from linbuf */
@@ -413,7 +419,7 @@ int io_mode __P ((int fd, int n)) LRZSZ_ATTRIB_SECTION(lrzsz_rare);
 void sendbrk __P ((int fd));
 
 //#define flushmo() fflush(stdout)
-#define flushmo() fflush(Ttystream)
+#define flushmo() fflush(Ttystream) // It isn't 1902, we don't need to do everything with stdout
 
 void purgeline __P ((int fd));
 void canit __P ((int fd));
